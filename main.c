@@ -13,7 +13,7 @@ SDL_Window* window;
 SDL_Renderer* renderer;
 
 //Sorting  
-const int ARRAY_SIZE = 20;
+const int ARRAY_SIZE = 50;
 
 //Function Protoypes
 
@@ -27,6 +27,7 @@ int findMin(int _array[], int _arraySize);
 int CalculateScaleFactor(int _array[] , int _arraySize , int _maxValue );
 void swapIndexes(int _array[], int index1, int index2);
 void SelectionSort(int _array[] , int _arraySize, SDL_Renderer* _renderer , int _scaleFactor , int _maxArrValue);
+void BubbleSort(int _array[] , int _arraySize, SDL_Renderer* _renderer , int _scaleFactor , int _maxArrValue);
 
 //Output
 void PrintArray(int _array[], int _arraySize);
@@ -45,10 +46,10 @@ int main(int argc, char** argv)
     //Setup the Visualiser Screen
     int displayScaleFactor = CalculateScaleFactor(array, ARRAY_SIZE, maxArrayValue);
     SDL_SetRenderDrawColor(renderer, 255,255,255,255);
-
     DrawState(array, ARRAY_SIZE, renderer, displayScaleFactor, maxArrayValue, -1 , -1 , -1 );
 
-    SelectionSort(array, ARRAY_SIZE, renderer,displayScaleFactor , maxArrayValue);
+    //DO Selection Sort Algoirthm
+    BubbleSort(array, ARRAY_SIZE, renderer,displayScaleFactor , maxArrayValue);
 
     int running = 1;
     while(running) // program loop
@@ -66,6 +67,9 @@ int main(int argc, char** argv)
                     break;
             }
         }
+
+
+
         
     
     }
@@ -146,6 +150,13 @@ int CalculateScaleFactor(int _array[] , int _arraySize , int _maxValue )
     return displayScaleFactor; 
 }
 
+void ClearScreen(SDL_Renderer* _renderer)
+{
+
+            SDL_SetRenderDrawColor(_renderer, 0,0,0,255);
+            SDL_RenderClear(_renderer);
+
+}
 
 void DrawState(int _array[] , int _arraySize, SDL_Renderer* _renderer, int _scaleFactor, int _maxArrValue , int red , int blue , int green )
 {
@@ -161,7 +172,7 @@ void DrawState(int _array[] , int _arraySize, SDL_Renderer* _renderer, int _scal
        dataRect.x = i * (WIDTH/(ARRAY_SIZE)) ; 
        dataRect.y =  (_maxArrValue + (_maxArrValue -_array[i] )) * (_scaleFactor) - maxRectHeight + WIDTH/20 ;
 
-        printf("\n Drawn index %d - { %d }, at  [%d , %d] , width = %d , height = %d ", i , _array[i], dataRect.x , dataRect.y , dataRect.h, dataRect.w);
+        //printf("\n Drawn index %d - { %d }, at  [%d , %d] , width = %d , height = %d ", i , _array[i], dataRect.x , dataRect.y , dataRect.h, dataRect.w);
        
        if ( green == 1){
         SDL_SetRenderDrawColor(_renderer, 0, 255 , 0 , 255);
@@ -187,13 +198,13 @@ void SelectionSort(int _array[] , int _arraySize, SDL_Renderer* _renderer , int 
 
     for(int i = 0; i < _arraySize ; i++)
     {
-     printf(".");
+     //printf(".");
 
         for(int j = i + 1 ; j < _arraySize ; j++)
         {
-            //Clear Canvas
-            SDL_SetRenderDrawColor(_renderer, 0,0,0,255);
-            SDL_RenderClear(_renderer);
+          
+          //Clear Canvas
+          ClearScreen(_renderer);
 
             //Set next block to white
             SDL_SetRenderDrawColor(_renderer, 255,255,255,255);
@@ -213,16 +224,62 @@ void SelectionSort(int _array[] , int _arraySize, SDL_Renderer* _renderer , int 
     }
     printf(" Sort Completed! \n ");
     
+
+
+  
+    //Final Output
+    ClearScreen(_renderer);
+    DrawState(_array, _arraySize, _renderer, _scaleFactor, _maxArrValue, -1 ,-1 , -1 );
+    SDL_RenderPresent(renderer);
+    PrintArray(_array ,_arraySize );
+}
+
+
+void BubbleSort(int _array[] , int _arraySize, SDL_Renderer* _renderer , int _scaleFactor , int _maxArrValue)
+{
+    printf("\n Sorting.");
+    ClearScreen(_renderer);
+    
+        int swapped = 1;
+
+        while (swapped == 1)
+        {
+            swapped = 0;
+
+            for (int i = 1; i < _arraySize ; i++)
+            {
+                ClearScreen(_renderer);
+                int j = i-1 ;
+            
+                    if (_array[i] < _array[j]) // buble sort ???
+                    {
+                        swapIndexes( _array  , j, i);
+                        swapped = 1;
+                    }
+                        
+                    SDL_Delay(100);
+
+                    SDL_SetRenderDrawColor(_renderer, 255,255,255,255);
+                    DrawState(_array, _arraySize, _renderer, _scaleFactor, _maxArrValue, j , i , -1 );
+                    SDL_RenderPresent(renderer);
+                    
+            }
+
+        }
+
+    printf(" Sort Completed! \n ");
+    
     //Clear Canvas
     SDL_SetRenderDrawColor(_renderer, 0,0,0,255);
     SDL_RenderClear(_renderer);
   
     //Final Output
-    
+
     DrawState(_array, _arraySize, _renderer, _scaleFactor, _maxArrValue, -1 ,-1 , -1 );
     SDL_RenderPresent(renderer);
     PrintArray(_array ,_arraySize );
 }
+
 
 
 
